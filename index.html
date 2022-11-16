@@ -1,29 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Link-in-bio</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <meta charset='utf-8'>
+    <title>fiq's link tree</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="./css/styles.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css'>
-    <script src="./js/three.r134.min.js"></script>
+    <script src="./js/three.min.js"></script>
     <script src="./js/vanta.halo.min.js"></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        // console.log('Vanta has been successfully loaded')
+        VANTA.HALO({
+        el: "#vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        amplitudeFactor: 0.30,
+        amplitudeFactor: 2.20,
+        backgroundColor: 0x1b,
+        size: 1.0
+        })
+    })
+    </script>
 </head>
+
 <body>
-    <video id="background-video" autoplay loop muted poster="./public/loading.png">
-        <source src="./public/back.mp4" type="video/mp4">
-    </video>
-    <div class="container">
-        <div class="card" data-tilt>
-            <img src="https://avatars.githubusercontent.com/u/64482868?s=400&u=c61a1aedad21f7d896707ea89c1eec3b453a9f68&v=4">
-            <h2>Taufiqurrahman</h2>
-            <a href="https://fiqlab.dev" class="btn" target="blank"><i class="fas fa-globe" style="color:#44ADFE"></i> Official Website</a><br>
-            <a href="https://fiqart.vercel.app" class="btn" target="blank"><i class="fas fa-paint-brush" style="color:#5d9795"></i> Virtual Gallery</a><br>
-            <a href="https://www.youtube.com/channel/UC6YSkM9lT6b5fRFc1gQEoPg" class="btn" target="blank"><i class="fab fa-youtube" style="color:#FF0000"></i> Youtube</a><br>
-            <a href="https://unsplash.com/photos/3TLl_97HNJo" class="btn" target="blank"><i class="fab fa-github"></i> Github</a><br>
-            <a href="https://www.linkedin.com/in/fiqgant" class="btn" target="blank"><i class="fab fa-linkedin" style="color:#0177B7"></i> LinkedIn</a><br>
-        </div>
-        </div>
+    <div id="vanta-bg">
+        <header>
+            <div>
+                <img src="https://avatars.githubusercontent.com/u/64482868?s=400&u=c61a1aedad21f7d896707ea89c1eec3b453a9f68&v=4" alt="Profile picture"/>
+            </div>
+            <h3> Taufiqurrahman </h3>
+            <p>Lecturer │ 3D Enthusiast │ AI/ML Geeks</p>
+        </header>
+        <main>
+            <section>
+                <div>
+                    <ul class="links-list">
+                        <li> 
+                            <a target="_blank" href="https://www.instagram.com/lkmlln_/"><a class="fas fa-globe" style="color:#44ADFE"></a> Official Website </a> 
+                        </li>
+                        <li>
+                            <a target="_blank" href="https://fiqart.vercel.app"><a class="fas fa-paint-brush" style="color:#5d9795"></a> Virtual Gallery</a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="https://fiqart.vercel.app"><a class="fab fa-youtube" style="color:#FF0000"></a> Youtube</a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="https://fiqart.vercel.app"><a class="fab fa-github"></a> Github</a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="https://fiqart.vercel.app"><a class="fab fa-linkedin" style="color:#0177B7"></a> LinkedIn</a>
+                        </li>
+                    </ul>
+                </div>
+        </section>
+        </main>
+
+        <footer>
+            <p>designed/coded by fiq.</p>
+            <a target="_blank" href="https://github.com/fiqgant">GitHub</a>
+        </footer> 
+    </div>
 </body>
 </html>
