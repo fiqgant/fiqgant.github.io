@@ -10,12 +10,12 @@
 
 body * {
     font-family: 'Raleway', sans-serif;
-    line-height: 100%;
+    line-height: auto;
 }
 
 body {
     background-color: #16161D;
-    background-size: 100%;
+    background-size: auto;
 }
 
 #vanta-bg {
@@ -142,7 +142,7 @@ section ul li {
 
 footer {
     font-family: 'Raleway', sans-serif;
-    padding-top: 160px;
+    padding-top: auto;
     text-align: center;
     font-size: 10px;
     color: white;
