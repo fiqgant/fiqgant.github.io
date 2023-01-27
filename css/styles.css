@@ -46,7 +46,7 @@ header a {
 }
 
 main {
-    max-width: 600px;
+    max-width: 100%;
     width: 80%;
     padding: 30px;
     margin: 16px auto;
