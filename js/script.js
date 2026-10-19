@@ -3,7 +3,6 @@ import { RGBELoader } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/
 import { OBJLoader } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/OBJLoader.js';
 
 const canvas = document.getElementById('canvas');
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 // Cap pixel ratio: 3x phones otherwise render 9x the pixels for no visible gain
@@ -44,11 +43,13 @@ const material = new THREE.MeshStandardMaterial({
   envMapIntensity: 10
 });
 
+let helm;
 new OBJLoader().load('./assets/helm.obj', (object) => {
   object.children[0].material = material;
   object.scale.setScalar(10);
   object.position.set(0, -1.5, 0);
   group.add(object);
+  helm = object;
   canvas.classList.add('ready');
 });
 
@@ -73,7 +74,7 @@ onWindowResize();
 
 let theta = 0;
 function update() {
-  if (!reducedMotion) theta += 0.0025;
+  theta += 0.0025;
 
   smooth.x += (pointer.x - smooth.x) * 0.05;
   smooth.y += (pointer.y - smooth.y) * 0.05;
@@ -94,7 +95,10 @@ function update() {
   pointlight2.position.y = 2 * -Math.cos(theta - 3) - 6;
 
   // Rotate the group to simulate the rotation of the HDR
-  if (!reducedMotion) group.rotation.y += 0.01;
+  group.rotation.y += 0.01;
+
+  // Spin the model itself (camera orbit alone barely reads as motion)
+  if (helm) helm.rotation.y += 0.012;
 
   camera.lookAt(0, 0, 0);
 }
