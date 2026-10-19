@@ -3,87 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <title>Taufiqurrahman</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Taufiqurrahman — Lecturer">
+  <meta name="theme-color" content="#0d1117">
 
   <!-- External Stylesheets -->
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
-
 </head>
 <body>
 
-  <!-- Headline Section -->
-  <div class="headline-container">
-    <div id="text-behind">Taufiqurrahman</div>
-    <div id="text-behind-blur">Taufiqurrahman</div>
-    <div id="text-front">Taufiqurrahman</div>
+  <!-- Headline: behind text sits under the canvas, outlined text sits over it -->
+  <div class="headline" aria-hidden="true">
+    <span id="text-behind-blur">Taufiqurrahman</span>
+    <span id="text-behind">Taufiqurrahman</span>
+    <span id="text-front">Taufiqurrahman</span>
   </div>
 
-  <!-- Canvas Background -->
-  <div class="canvas-container">
-    <canvas id="canvas"></canvas>
-  </div>
+  <!-- 3D Canvas -->
+  <canvas id="canvas"></canvas>
 
-  <!-- Optional Extra Content -->
-  <div class="more-content"></div>
-
-  <!-- Text & Social Section -->
-  <div class="text-container">
-
-    <!-- Name and Role -->
-    <div class="title">
-      Taufiqurrahman
-      <br>
-      <a href="https://wbi.ac.id" target="_blank" rel="noopener noreferrer">Lecturer</a>
-    </div>
-
-    <!-- Social Media Buttons -->
-    <div class="socials">
-      <a href="https://fiqlab.vercel.app" target="_blank" rel="noopener noreferrer">
-        <button class="social-button">
-          <span class="social-icon"><i class="fas fa-globe"></i></span>
-          Website
-        </button>
+  <main class="ui">
+    <header class="nav">
+      <h1 class="brand">Taufiqurrahman</h1>
+      <a class="pill" href="https://wbi.ac.id" target="_blank" rel="noopener noreferrer">
+        <span class="dot"></span> Lecturer <i class="fas fa-arrow-up-right-from-square"></i>
       </a>
+    </header>
 
-      <a href="https://fiqart.vercel.app" target="_blank" rel="noopener noreferrer">
-        <button class="social-button">
-          <span class="social-icon"><i class="fas fa-paint-brush"></i></span>
-          Virtual Gallery
-        </button>
+    <nav class="socials" aria-label="Links">
+      <a class="social" href="https://fiqlab.vercel.app" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-globe"></i><span>Website</span>
       </a>
-
-      <a href="https://www.youtube.com/channel/UC6YSkM9lT6b5fRFc1gQEoPg" target="_blank" rel="noopener noreferrer">
-        <button class="social-button">
-          <span class="social-icon"><i class="fab fa-youtube"></i></span>
-          YouTube
-        </button>
+      <a class="social" href="https://fiqart.vercel.app" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-paint-brush"></i><span>Gallery</span>
       </a>
-
-      <a href="https://github.com/fiqgant/" target="_blank" rel="noopener noreferrer">
-        <button class="social-button">
-          <span class="social-icon"><i class="fab fa-github"></i></span>
-          GitHub
-        </button>
+      <a class="social" href="https://www.youtube.com/channel/UC6YSkM9lT6b5fRFc1gQEoPg" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-youtube"></i><span>YouTube</span>
       </a>
-
-      <a href="https://instagram.com/tfqrrhmn" target="_blank" rel="noopener noreferrer">
-        <button class="social-button">
-          <span class="social-icon"><i class="fab fa-instagram"></i></span>
-          Instagram
-        </button>
+      <a class="social" href="https://github.com/fiqgant/" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-github"></i><span>GitHub</span>
       </a>
-
-      <a href="https://www.linkedin.com/in/fiqgant" target="_blank" rel="noopener noreferrer">
-        <button class="social-button">
-          <span class="social-icon"><i class="fab fa-linkedin"></i></span>
-          LinkedIn
-        </button>
+      <a class="social" href="https://instagram.com/tfqrrhmn" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram"></i><span>Instagram</span>
       </a>
-    </div>
-  </div>
+      <a class="social" href="https://www.linkedin.com/in/fiqgant" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-linkedin"></i><span>LinkedIn</span>
+      </a>
+    </nav>
+  </main>
 
   <!-- JavaScript -->
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.module.js" } }
+  </script>
   <script type="module" src="./js/script.js"></script>
 
 </body>

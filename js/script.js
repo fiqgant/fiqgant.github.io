@@ -1,146 +1,102 @@
-// Get the elements that will be transformed during scrolling
-const textBehind = document.getElementById('text-behind');
-const textFront = document.getElementById('text-front');
-const textBehindBlur = document.getElementById('text-behind-blur');
-const canvasRect = document.getElementById('canvas');
+import * as THREE from 'three';
+import { RGBELoader } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/RGBELoader.js';
+import { OBJLoader } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/OBJLoader.js';
 
-// Define the increment of scaling
-// Text scaling
-const parallaxScaling1 = 0.0005;
-// Canvas scaling
-const parallaxScaling2 = 0.00025;
-// Three.js Camera Rotation Speed
-const parallaxScaling3 = 0.0000001;
+const canvas = document.getElementById('canvas');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Initialize scroll and ease values
-let currentScroll = 0;
-let targetScroll = 0;
-let ease = 0.001;
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+// Cap pixel ratio: 3x phones otherwise render 9x the pixels for no visible gain
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight, false);
 
-let theta1 = 0;
-function updateScale() {
-  
-  let rect = canvasRect.getBoundingClientRect();
-  
-  let startScrollPosition = window.pageYOffset + rect.top; 
-  let endScrollPosition = window.pageYOffset + rect.bottom;
+const scene = new THREE.Scene();
 
-  if (targetScroll + window.innerHeight < startScrollPosition || targetScroll > endScrollPosition) {
-    return;
-  }
-
-  currentScroll += (targetScroll - currentScroll) * ease;
-  
-  let scaleValue1 = 1 + (currentScroll * parallaxScaling1);
-  let scaleValue2 = 1 + (currentScroll * parallaxScaling2);
-    
-  textBehind.style.transform = `scale(${scaleValue1})`;
-  textFront.style.transform = `scale(${scaleValue1})`;
-  textBehindBlur.style.transform = `scale(${scaleValue1})`;
-  canvasRect.style.transform = `scale(${scaleValue2})`;
-  
-  theta1 += currentScroll * parallaxScaling3;
-    
-}
-
-window.addEventListener('scroll', () => {
-    targetScroll = window.pageYOffset;
-    updateScale();
-});
-
-updateScale();
-
-import * as THREE from 'https://cdn.skypack.dev/three@0.124.0';
-import { RGBELoader  } from 'https://cdn.skypack.dev/three@0.124.0/examples/jsm/loaders/RGBELoader.js';
-import { OBJLoader } from 'https://cdn.skypack.dev/three@0.134.0/examples/jsm/loaders/OBJLoader.js';
-
-var renderer = new THREE.WebGLRenderer({ canvas : document.getElementById('canvas'), antialias:true, alpha: true });
-
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-
-var scene = new THREE.Scene();
-
-// create a new RGBELoader to import the HDR
+// HDR environment for the chrome reflections
 const hdrEquirect = new RGBELoader()
-  // add your HDR //
-	.setPath( 'https://raw.githubusercontent.com/miroleon/gradient_hdr_freebie/main/Gradient_HDR_Freebies/' )
-	.load( 'ml_gradient_freebie_01.hdr', function () {
-
-  hdrEquirect.mapping = THREE.EquirectangularReflectionMapping;
-} );
+  .setPath('https://raw.githubusercontent.com/miroleon/gradient_hdr_freebie/main/Gradient_HDR_Freebies/')
+  .load('ml_gradient_freebie_01.hdr', () => {
+    hdrEquirect.mapping = THREE.EquirectangularReflectionMapping;
+  });
 scene.environment = hdrEquirect;
 
-// add Fog to the scene - if too dark go lower with the second value
+// Fog - if too dark go lower with the second value
 scene.fog = new THREE.FogExp2(0x11151c, 0.15);
 
-var group = new THREE.Group();
+const group = new THREE.Group();
 scene.add(group);
 
-const pointlight = new THREE.PointLight (0x85ccb8, 7.5, 20);
-pointlight.position.set (0,3,2);
-group.add (pointlight);
+const pointlight = new THREE.PointLight(0x85ccb8, 7.5, 20);
+pointlight.position.set(0, 3, 2);
+group.add(pointlight);
 
-const pointlight2 = new THREE.PointLight (0x9f85cc, 7.5, 20);
-pointlight2.position.set (0,3,2);
-group.add (pointlight2);
+const pointlight2 = new THREE.PointLight(0x9f85cc, 7.5, 20);
+pointlight2.position.set(0, 3, 2);
+group.add(pointlight2);
 
-// create the camera
-var camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
-camera.position.z = 10;
-// add the camera to the group
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 group.add(camera);
 
-const material1 = new THREE.MeshStandardMaterial({
+const material = new THREE.MeshStandardMaterial({
   color: 0xffffff,
   roughness: 0,
   metalness: 0.7,
   envMapIntensity: 10
 });
 
-// Load the model
-const objloader = new OBJLoader();
-objloader.load(
-    './assets/helm.obj',
-    (object) => {
-        object.children[0].material = material1;
-        object.scale.setScalar( 10 );
-        object.position.set( 0, -1.5, 0 );
-        group.add(object);
-    },
-);
+new OBJLoader().load('./assets/helm.obj', (object) => {
+  object.children[0].material = material;
+  object.scale.setScalar(10);
+  object.position.set(0, -1.5, 0);
+  group.add(object);
+  canvas.classList.add('ready');
+});
 
-// RESIZE
-window.addEventListener( 'resize', onWindowResize );
+// Pointer parallax (mouse + touch), smoothed in the render loop
+const pointer = { x: 0, y: 0 };
+const smooth = { x: 0, y: 0 };
+window.addEventListener('pointermove', (e) => {
+  pointer.x = e.clientX / window.innerWidth - 0.5;
+  pointer.y = e.clientY / window.innerHeight - 0.5;
+});
 
-var update = function() {
-  // Continuously animate theta1 irrespective of scrolling to ensure there's an inherent animation in the 3D visualization.
-  theta1 += 0.0025;
-
-  // create a panning animation for the camera
-  camera.position.x = Math.sin( theta1 ) * 10;
-  camera.position.z = Math.cos( theta1 ) * 10;
-  camera.position.y = Math.cos( theta1 );
-  
-  pointlight.position.x = Math.sin( theta1+1 ) * 11;
-  pointlight.position.z = Math.cos( theta1+1 ) * 11;
-  pointlight.position.y = 2*Math.cos( theta1-3 ) +3;
-  
-  pointlight2.position.x = -Math.sin( theta1+1 ) * 11;
-  pointlight2.position.z = -Math.cos( theta1+1 ) * 11;
-  pointlight2.position.y = 2*-Math.cos( theta1-3 ) -6;
-  
-  // rotate the group to simulate the rotation of the HDR
-  group.rotation.y += 0.01;
-
-  // keep the camera look at 0,0,0
-  camera.lookAt( 0, 0, 0 );
-}
-
+// Pull the camera back on portrait screens so the model doesn't swallow the layout
+let radius = 10;
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  radius = camera.aspect < 1 ? 12 : 10;
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
+}
+window.addEventListener('resize', onWindowResize);
+onWindowResize();
+
+let theta = 0;
+function update() {
+  if (!reducedMotion) theta += 0.0025;
+
+  smooth.x += (pointer.x - smooth.x) * 0.05;
+  smooth.y += (pointer.y - smooth.y) * 0.05;
+
+  const t = theta + smooth.x * 0.8;
+
+  // Orbit the camera around the model
+  camera.position.x = Math.sin(t) * radius;
+  camera.position.z = Math.cos(t) * radius;
+  camera.position.y = Math.cos(t) + smooth.y * 3;
+
+  pointlight.position.x = Math.sin(theta + 1) * 11;
+  pointlight.position.z = Math.cos(theta + 1) * 11;
+  pointlight.position.y = 2 * Math.cos(theta - 3) + 3;
+
+  pointlight2.position.x = -Math.sin(theta + 1) * 11;
+  pointlight2.position.z = -Math.cos(theta + 1) * 11;
+  pointlight2.position.y = 2 * -Math.cos(theta - 3) - 6;
+
+  // Rotate the group to simulate the rotation of the HDR
+  if (!reducedMotion) group.rotation.y += 0.01;
+
+  camera.lookAt(0, 0, 0);
 }
 
 function animate() {
